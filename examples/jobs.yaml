@@ -12,3 +12,11 @@ jobs:
     retries: 2
     env:
       OCW_ALERT_ENABLED: "0"
+
+
+chains:
+  demo_chain:
+    steps:
+      - demo_hello
+      - demo_fail_once
+      - demo_hello

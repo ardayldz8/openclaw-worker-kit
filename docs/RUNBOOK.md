@@ -99,3 +99,14 @@ Run a job by manifest:
 ```bash
 /opt/openclaw-worker/kit/bin/manifest_run.sh /opt/openclaw-worker/kit/examples/jobs.yaml demo_hello
 ```
+
+## Chained Jobs (A -> B -> C)
+Run a chain defined in `jobs.yaml`:
+```bash
+/opt/openclaw-worker/kit/bin/manifest_chain_run.sh /opt/openclaw-worker/kit/examples/jobs.yaml demo_chain
+```
+
+Behavior:
+- Each step runs in order
+- On first failure, downstream steps stop
+- Latest chain state stored in `/opt/openclaw-worker/state/chain_<name>_latest.json`

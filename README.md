@@ -89,3 +89,7 @@ Includes lightweight metrics exporter:
 ## Manifest Support (v0.3.0)
 - Validate: `bin/manifest_validate.py --file examples/jobs.yaml --json`
 - Run job: `bin/manifest_run.sh examples/jobs.yaml demo_hello`
+
+## Chained Execution
+- `bin/manifest_chain_run.sh <manifest.yaml> <chain_name>`
+- Stops chain on first failure and records chain state JSON.
