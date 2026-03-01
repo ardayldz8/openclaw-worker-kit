@@ -132,3 +132,6 @@ TARGET=10 SLEEP_SEC=1 JOB_NAME=demo_checkpoint_job /opt/openclaw-worker/kit/exam
 sudo bash /opt/openclaw-worker/kit/bin/bootstrap_worker.sh --dry-run
 sudo bash /opt/openclaw-worker/kit/bin/uninstall_worker.sh
 ```
+
+## 24h Dogfood Validation
+Use `docs/DOGFOOD_REPORT_TEMPLATE.md` to run and document operational validation before patch/minor releases.
