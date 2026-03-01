@@ -64,3 +64,13 @@ Example:
 OCW_RETRY_MAX=5 OCW_RETRY_BASE_SLEEP=2 OCW_RETRY_JITTER_MAX=1 \
   ./bin/run_with_retry.sh auto curl -fsS https://example.com/health
 ```
+
+## Alerts on Failure
+Use `bin/alert_hook.sh` via `run_with_retry.sh`:
+- webhook mode (`OCW_ALERT_MODE=webhook` + `OCW_ALERT_WEBHOOK_URL`)
+- telegram mode (`OCW_ALERT_MODE=telegram` + bot token/chat id)
+
+Enable with:
+```bash
+export OCW_ALERT_ENABLED=1
+```

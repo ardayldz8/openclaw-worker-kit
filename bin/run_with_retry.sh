@@ -35,6 +35,9 @@ case "$OCW_RETRY_JITTER_MAX" in
 esac
 
 echo "[retry] policy: max=${MAX_RETRIES} base_sleep=${OCW_RETRY_BASE_SLEEP}s jitter_max=${OCW_RETRY_JITTER_MAX}s"
+OCW_ALERT_ENABLED="${OCW_ALERT_ENABLED:-0}"
+OCW_JOB_NAME="${OCW_JOB_NAME:-run_with_retry}"
+OCW_LOG_PATH="${OCW_LOG_PATH:-unknown}"
 
 attempt=0
 while true; do
@@ -45,9 +48,15 @@ while true; do
     echo "[retry] success"
     exit 0
   fi
+  LAST_EXIT=$?
 
   if [ "$attempt" -ge "$MAX_RETRIES" ]; then
     echo "[retry] failed after ${attempt} attempts"
+    if [ "$OCW_ALERT_ENABLED" = "1" ] && [ -x "$(dirname "$0")/alert_hook.sh" ]; then
+      EVENT="job_failure"
+      [ "$LAST_EXIT" = "124" ] && EVENT="job_timeout"
+      OCW_JOB_NAME="$OCW_JOB_NAME" OCW_LOG_PATH="$OCW_LOG_PATH" "$(dirname "$0")/alert_hook.sh" "$EVENT" "command failed after retries" "$LAST_EXIT" || true
+    fi
     exit 1
   fi
 
