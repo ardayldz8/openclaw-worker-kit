@@ -51,3 +51,16 @@ See:
 
 ## License
 MIT
+
+## Retry Policy (env)
+`bin/run_with_retry.sh` supports env-configurable retry behavior:
+
+- `OCW_RETRY_MAX` (default: `3`)
+- `OCW_RETRY_BASE_SLEEP` (default: `1`)
+- `OCW_RETRY_JITTER_MAX` (default: `3`)
+
+Example:
+```bash
+OCW_RETRY_MAX=5 OCW_RETRY_BASE_SLEEP=2 OCW_RETRY_JITTER_MAX=1 \
+  ./bin/run_with_retry.sh auto curl -fsS https://example.com/health
+```
