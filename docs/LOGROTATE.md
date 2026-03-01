@@ -1,6 +1,6 @@
 # Log Rotation
 
-Example `/etc/logrotate.d/openclaw-worker`:
+Recommended file: `/etc/logrotate.d/openclaw-worker`
 
 ```conf
 /opt/openclaw-worker/logs/*.log {
@@ -11,10 +11,20 @@ Example `/etc/logrotate.d/openclaw-worker`:
   missingok
   notifempty
   copytruncate
+  su root root
 }
 ```
 
-Apply test:
+## Validate config
 ```bash
 sudo logrotate -d /etc/logrotate.d/openclaw-worker
 ```
+
+## Force one run (test)
+```bash
+sudo logrotate -f /etc/logrotate.d/openclaw-worker
+```
+
+## Notes
+- `copytruncate` is used to avoid breaking processes writing active logs.
+- If your jobs can reopen log files safely, you may replace with stricter rotation strategy.
