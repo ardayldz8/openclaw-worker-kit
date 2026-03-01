@@ -102,3 +102,8 @@ Includes lightweight metrics exporter:
 - `bin/bootstrap_worker.sh --dry-run`
 - `bin/bootstrap_worker.sh --config <file>`
 - `bin/uninstall_worker.sh`
+
+## Docker (v0.4.0)
+- `Dockerfile`
+- `docker-compose.yml`
+- `docs/DOCKER.md`

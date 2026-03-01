@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  ocw:
+    build: .
+    container_name: openclaw-worker-kit
+    volumes:
+      - ./examples:/opt/openclaw-worker/kit/examples
+      - ./state:/opt/openclaw-worker/state
+      - ./logs:/opt/openclaw-worker/logs
+    environment:
+      - OCW_STATE_DIR=/opt/openclaw-worker/state
+    command: ["bash", "-lc", "./bin/healthcheck_worker.sh --json && ./bin/manifest_validate.py --file examples/jobs.yaml"]
