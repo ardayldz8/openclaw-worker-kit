@@ -49,3 +49,20 @@ Dry-run alert test:
 OCW_ALERT_DRY_RUN=1 OCW_ALERT_ENABLED=1 OCW_ALERT_MODE=webhook OCW_ALERT_WEBHOOK_URL=https://example.com \
   ./bin/run_with_retry.sh auto bash -lc 'exit 1'
 ```
+
+## Failure Threshold & Cooldown Alerts
+To reduce alert noise, alerts can be gated by consecutive failure threshold and cooldown window.
+
+Env vars:
+- `OCW_ALERT_FAIL_THRESHOLD` (default: `3`)
+- `OCW_ALERT_COOLDOWN_SEC` (default: `900`)
+- `OCW_ALERT_RECOVERY_ENABLED` (default: `1`)
+
+Example:
+```bash
+export OCW_ALERT_ENABLED=1
+export OCW_ALERT_MODE=webhook
+export OCW_ALERT_WEBHOOK_URL="https://example.com/hook"
+export OCW_ALERT_FAIL_THRESHOLD=3
+export OCW_ALERT_COOLDOWN_SEC=600
+```
