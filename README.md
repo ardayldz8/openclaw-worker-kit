@@ -93,3 +93,7 @@ Includes lightweight metrics exporter:
 ## Chained Execution
 - `bin/manifest_chain_run.sh <manifest.yaml> <chain_name>`
 - Stops chain on first failure and records chain state JSON.
+
+## Checkpoint/Resume Helper
+- `bin/checkpoint.sh save|load|clear <job>`
+- `examples/demo_checkpoint_job.sh` demonstrates resumable processing.

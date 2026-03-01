@@ -20,3 +20,14 @@ chains:
       - demo_hello
       - demo_fail_once
       - demo_hello
+
+  demo_checkpoint:
+    description: "Resumable checkpoint demo"
+    command: "TARGET=5 SLEEP_SEC=0.1 JOB_NAME=demo_checkpoint_job ./examples/demo_checkpoint_job.sh"
+    timeout_sec: 120
+    retries: 1
+
+  resume_chain:
+    steps:
+      - demo_checkpoint
+      - demo_hello

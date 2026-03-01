@@ -110,3 +110,19 @@ Behavior:
 - Each step runs in order
 - On first failure, downstream steps stop
 - Latest chain state stored in `/opt/openclaw-worker/state/chain_<name>_latest.json`
+
+## Checkpoint / Resume
+Helper script:
+```bash
+# save checkpoint value
+/opt/openclaw-worker/kit/bin/checkpoint.sh save my_job 42
+# load checkpoint value
+/opt/openclaw-worker/kit/bin/checkpoint.sh load my_job
+# clear checkpoint
+/opt/openclaw-worker/kit/bin/checkpoint.sh clear my_job
+```
+
+Resumable example job:
+```bash
+TARGET=10 SLEEP_SEC=1 JOB_NAME=demo_checkpoint_job /opt/openclaw-worker/kit/examples/demo_checkpoint_job.sh
+```
