@@ -1,21 +1,27 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Minimal bridge to run Accomplish tasks from openclaw-worker-kit.
+# Accomplish bridge to run desktop-agent tasks from openclaw-worker-kit.
+#
 # Usage:
 #   accomplish_bridge.sh --prompt "do something"
 #   accomplish_bridge.sh --task-file /path/task.txt
+#
 # Optional env:
 #   OCW_STATE_DIR=/opt/openclaw-worker/state
-#   ACCOMPLISH_BIN=accomplish
-#   ACCOMPLISH_BRIDGE_MOCK=1   # for local testing without Accomplish installed
+#   ACCOMPLISH_BRIDGE_MOCK=1
+#   ACCOMPLISH_CMD_TEMPLATE='accomplish run --task "{{PROMPT}}"'
+#
+# Notes:
+# - If ACCOMPLISH_CMD_TEMPLATE is set, it is used as-is after replacing {{PROMPT}}.
+# - Otherwise bridge tries known command patterns in order.
 
 PROMPT=""
 TASK_FILE=""
 STATE_DIR="${OCW_STATE_DIR:-/opt/openclaw-worker/state}"
-ACCOMPLISH_BIN="${ACCOMPLISH_BIN:-accomplish}"
 mkdir -p "$STATE_DIR"
 OUT_JSON="${STATE_DIR}/accomplish_last.json"
+TMP_PROMPT_FILE="${STATE_DIR}/accomplish_prompt.txt"
 
 usage(){
   echo "usage: accomplish_bridge.sh [--prompt <text> | --task-file <path>]"
@@ -43,37 +49,77 @@ if [ -n "$TASK_FILE" ]; then
   PROMPT="$(cat "$TASK_FILE")"
 fi
 
+# persist prompt for tools that can read files
+printf '%s\n' "$PROMPT" > "$TMP_PROMPT_FILE"
+
 start_ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 status="failed"
 message=""
 exit_code=1
+command_used=""
+
+run_template(){
+  local t="$1"
+  # escape single quotes for safe shell literal replacement
+  local escaped
+  escaped=$(printf "%s" "$PROMPT" | sed "s/'/'\\''/g")
+  local cmd
+  cmd=$(printf "%s" "$t" | sed "s/{{PROMPT}}/'$escaped'/g" | sed "s#{{PROMPT_FILE}}#$TMP_PROMPT_FILE#g")
+  command_used="$cmd"
+  bash -lc "$cmd"
+}
 
 if [ "${ACCOMPLISH_BRIDGE_MOCK:-0}" = "1" ]; then
-  # deterministic local test mode
   status="success"
   message="mock mode: task accepted"
   exit_code=0
+  command_used="mock"
 else
-  if ! command -v "$ACCOMPLISH_BIN" >/dev/null 2>&1; then
-    message="accomplish binary not found (set ACCOMPLISH_BIN or install Accomplish)"
-    exit_code=127
-  else
-    # Generic invocation pattern; adapt when your local Accomplish CLI command syntax is finalized.
-    if "$ACCOMPLISH_BIN" run --task "$PROMPT"; then
+  if [ -n "${ACCOMPLISH_CMD_TEMPLATE:-}" ]; then
+    if run_template "$ACCOMPLISH_CMD_TEMPLATE"; then
       status="success"
       message="task executed"
       exit_code=0
     else
       exit_code=$?
-      message="accomplish run failed"
+      message="template command failed"
+    fi
+  else
+    # Auto-detect common invocation patterns.
+    # Keep this list short and explicit.
+    if command -v accomplish >/dev/null 2>&1; then
+      command_used="accomplish run --task <prompt>"
+      if accomplish run --task "$PROMPT"; then
+        status="success"; message="task executed"; exit_code=0
+      else
+        exit_code=$?; message="accomplish run failed"
+      fi
+    elif command -v opencode >/dev/null 2>&1; then
+      command_used="opencode --prompt <prompt>"
+      if opencode --prompt "$PROMPT"; then
+        status="success"; message="task executed"; exit_code=0
+      else
+        exit_code=$?; message="opencode command failed"
+      fi
+    elif command -v npx >/dev/null 2>&1; then
+      command_used="npx -y opencode-ai --prompt <prompt>"
+      if npx -y opencode-ai --prompt "$PROMPT"; then
+        status="success"; message="task executed"; exit_code=0
+      else
+        exit_code=$?; message="npx opencode-ai failed"
+      fi
+    else
+      message="no supported command found. Set ACCOMPLISH_CMD_TEMPLATE."
+      exit_code=127
+      command_used="none"
     fi
   fi
 fi
 
 end_ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-python3 - "$OUT_JSON" "$status" "$message" "$start_ts" "$end_ts" "$exit_code" <<'PY'
+python3 - "$OUT_JSON" "$status" "$message" "$start_ts" "$end_ts" "$exit_code" "$command_used" <<'PY'
 import json,sys
-p,status,msg,start,end,code=sys.argv[1:7]
+p,status,msg,start,end,code,cmd=sys.argv[1:8]
 obj={
   "tool":"accomplish_bridge",
   "status":status,
@@ -81,6 +127,7 @@ obj={
   "start_ts":start,
   "end_ts":end,
   "exit_code":int(code),
+  "command_used":cmd,
 }
 with open(p,'w',encoding='utf-8') as f:
   json.dump(obj,f)
