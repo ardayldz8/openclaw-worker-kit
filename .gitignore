@@ -1,0 +1,5 @@
+*.log
+.env
+.env.*
+*.pid
+.DS_Store

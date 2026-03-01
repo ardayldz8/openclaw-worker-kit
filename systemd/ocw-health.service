@@ -1,0 +1,10 @@
+[Unit]
+Description=OpenClaw Worker Health Check
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=/opt/openclaw-worker/kit/bin/healthcheck_worker.sh

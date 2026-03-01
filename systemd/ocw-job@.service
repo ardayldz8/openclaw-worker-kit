@@ -1,0 +1,15 @@
+[Unit]
+Description=OpenClaw Worker Job (%i)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+WorkingDirectory=/opt/openclaw-worker
+ExecStart=/opt/openclaw-worker/jobs/%i.sh
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=6
+TimeoutStartSec=6h
