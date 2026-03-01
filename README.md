@@ -112,3 +112,8 @@ sudo OCW_PURGE_DATA=1 bash bin/uninstall_worker.sh
 
 ## License
 MIT
+
+## Accomplish Bridge (MVP)
+- Bridge script: `bin/accomplish_bridge.sh`
+- Docs: `docs/ACCOMPLISH_BRIDGE.md`
+- Example job: `accomplish_demo` in `examples/jobs.yaml`

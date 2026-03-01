@@ -1,5 +1,14 @@
 version: v2
 jobs:
+
+  accomplish_demo:
+    description: "Run a demo task via Accomplish bridge"
+    command: "ACCOMPLISH_BRIDGE_MOCK=1 bash ./bin/accomplish_bridge.sh --task-file ./examples/accomplish_task_demo.txt"
+    timeout_sec: 120
+    retries: 1
+    owner: "automation"
+    tags: ["accomplish","bridge","demo"]
+    resume_strategy: "best-effort"
   demo_hello:
     description: "Simple hello world job"
     owner: "platform"
