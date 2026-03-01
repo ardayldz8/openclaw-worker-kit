@@ -10,3 +10,9 @@ systemctl start ocw-health.service
 
 ## Logs
 /opt/openclaw-worker/logs/
+
+## JSON health output
+```bash
+/opt/openclaw-worker/kit/bin/healthcheck_worker.sh --json
+cat /opt/openclaw-worker/state/health_latest.json
+```
