@@ -126,3 +126,9 @@ Resumable example job:
 ```bash
 TARGET=10 SLEEP_SEC=1 JOB_NAME=demo_checkpoint_job /opt/openclaw-worker/kit/examples/demo_checkpoint_job.sh
 ```
+
+## Installer/Uninstaller
+```bash
+sudo bash /opt/openclaw-worker/kit/bin/bootstrap_worker.sh --dry-run
+sudo bash /opt/openclaw-worker/kit/bin/uninstall_worker.sh
+```

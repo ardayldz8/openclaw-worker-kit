@@ -97,3 +97,8 @@ Includes lightweight metrics exporter:
 ## Checkpoint/Resume Helper
 - `bin/checkpoint.sh save|load|clear <job>`
 - `examples/demo_checkpoint_job.sh` demonstrates resumable processing.
+
+## Installer Improvements (v0.4.0)
+- `bin/bootstrap_worker.sh --dry-run`
+- `bin/bootstrap_worker.sh --config <file>`
+- `bin/uninstall_worker.sh`
