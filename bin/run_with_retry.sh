@@ -63,6 +63,20 @@ PYS
 
 state_reset(){ state_write 0 0; }
 
+history_write(){
+  local exit_code="$1"
+  local state_dir="${OCW_STATE_DIR:-/opt/openclaw-worker/state}"
+  mkdir -p "$state_dir/history"
+  python3 - "$state_dir" "${OCW_JOB_NAME:-unknown}" "$exit_code" <<'PYS'
+import json,sys,time,uuid
+state,job,code=sys.argv[1:4]
+obj={"id":str(uuid.uuid4()),"ts":int(time.time()),"job":job,"exit_code":int(code)}
+with open(f"{state}/history/{obj['ts']}_{obj['id']}.json",'w') as f:
+    json.dump(obj,f)
+print('history_written')
+PYS
+}
+
 attempt=0
 while true; do
   attempt=$((attempt+1))
@@ -79,6 +93,7 @@ while true; do
       state_reset
     fi
     [ -x "$(dirname "$0")/metrics_snapshot.sh" ] && "$(dirname "$0")/metrics_snapshot.sh" >/dev/null 2>&1 || true
+    history_write 0 >/dev/null 2>&1 || true
     exit 0
   fi
 
@@ -109,6 +124,7 @@ while true; do
       fi
     fi
     [ -x "$(dirname "$0")/metrics_snapshot.sh" ] && "$(dirname "$0")/metrics_snapshot.sh" >/dev/null 2>&1 || true
+    history_write "$LAST_EXIT" >/dev/null 2>&1 || true
     exit 1
   fi
 

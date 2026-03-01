@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+cmd="${1:-}"
+shift || true
+
+case "$cmd" in
+  validate)
+    python3 "$ROOT/manifest_validate.py" "$@"
+    ;;
+  run)
+    "$ROOT/manifest_run.sh" "$@"
+    ;;
+  chain)
+    "$ROOT/manifest_chain_run.sh" "$@"
+    ;;
+  status)
+    "$ROOT/ocw_status.sh" "$@"
+    ;;
+  trend)
+    "$ROOT/ocw_trend.sh" "$@"
+    ;;
+  history)
+    "$ROOT/ocw_history.sh" "$@"
+    ;;
+  *)
+    cat <<USAGE
+usage: ocwctl <validate|run|chain|status|trend|history> [...args]
+USAGE
+    exit 2
+    ;;
+esac

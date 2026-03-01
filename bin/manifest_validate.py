@@ -11,7 +11,7 @@ except Exception:
     sys.exit(2)
 
 REQUIRED_JOB_KEYS = {"command"}
-OPTIONAL_JOB_KEYS = {"timeout_sec", "retries", "env", "description"}
+OPTIONAL_JOB_KEYS = {"timeout_sec", "retries", "env", "description", "owner", "tags", "sla_sec", "resume_strategy", "alert_policy"}
 
 
 def _err(errors, path, msg):
@@ -23,11 +23,15 @@ def validate_manifest(obj: dict):
     if not isinstance(obj, dict):
         return ["root: must be a mapping/object"], {}
 
+    manifest_version = obj.get("version", "v1")
+    if manifest_version not in ("v1","v2"):
+        return ["version: must be v1 or v2"], {}
+
     jobs = obj.get("jobs")
     if not isinstance(jobs, dict) or not jobs:
         return ["jobs: must be a non-empty mapping"], {}
 
-    normalized = {"jobs": {}}
+    normalized = {"version": manifest_version, "jobs": {}}
 
     for name, conf in jobs.items():
         job_path = f"jobs.{name}" if isinstance(name, str) else "jobs.<invalid-name>"
@@ -63,12 +67,24 @@ def validate_manifest(obj: dict):
         if not isinstance(env, dict):
             _err(errors, f"{job_path}.env", "must be mapping")
 
+        if "tags" in conf and not isinstance(conf.get("tags"), list):
+            _err(errors, f"{job_path}.tags", "must be array")
+        if "sla_sec" in conf and (not isinstance(conf.get("sla_sec"), int) or conf.get("sla_sec") <= 0):
+            _err(errors, f"{job_path}.sla_sec", "must be positive int")
+        if "resume_strategy" in conf and conf.get("resume_strategy") not in ("strict", "best-effort"):
+            _err(errors, f"{job_path}.resume_strategy", "must be strict|best-effort")
+
         normalized["jobs"][name] = {
             "description": conf.get("description", ""),
             "command": cmd,
             "timeout_sec": timeout_sec,
             "retries": retries,
             "env": {str(k): str(v) for k, v in env.items()} if isinstance(env, dict) else {},
+            "owner": str(conf.get("owner", "")) if conf.get("owner") is not None else "",
+            "tags": conf.get("tags", []),
+            "sla_sec": conf.get("sla_sec"),
+            "resume_strategy": conf.get("resume_strategy", "best-effort"),
+            "alert_policy": conf.get("alert_policy", {}),
         }
 
     return errors, normalized

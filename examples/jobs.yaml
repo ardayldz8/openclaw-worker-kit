@@ -1,6 +1,11 @@
+version: v2
 jobs:
   demo_hello:
     description: "Simple hello world job"
+    owner: "platform"
+    tags: ["demo","hello"]
+    sla_sec: 60
+    resume_strategy: "best-effort"
     command: "echo hello-from-manifest && date -u"
     timeout_sec: 60
     retries: 1

@@ -118,3 +118,8 @@ Includes lightweight metrics exporter:
 - `bin/ocw_status.sh`
 - `bin/ocw_trend.sh`
 - `docs/OBSERVABILITY.md`
+
+## v0.5.0 Foundations
+- `bin/ocwctl` unified CLI wrapper
+- `schemas/jobs.v2.schema.json`
+- `bin/ocw_history.sh`
