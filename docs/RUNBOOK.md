@@ -135,3 +135,9 @@ sudo bash /opt/openclaw-worker/kit/bin/uninstall_worker.sh
 
 ## 24h Dogfood Validation
 Use `docs/DOGFOOD_REPORT_TEMPLATE.md` to run and document operational validation before patch/minor releases.
+
+### Checkpoint corruption fallback
+If a checkpoint JSON is invalid, `bin/checkpoint.sh load <job>` now:
+- returns empty value (safe fallback),
+- emits warning to stderr,
+- renames bad file to `checkpoint_<job>.json.corrupt-<epoch>`.

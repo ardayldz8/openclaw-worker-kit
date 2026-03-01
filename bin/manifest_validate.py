@@ -14,37 +14,42 @@ REQUIRED_JOB_KEYS = {"command"}
 OPTIONAL_JOB_KEYS = {"timeout_sec", "retries", "env", "description"}
 
 
+def _err(errors, path, msg):
+    errors.append(f"{path}: {msg}")
+
+
 def validate_manifest(obj: dict):
     errors = []
     if not isinstance(obj, dict):
-        return ["Manifest root must be a mapping/object"], {}
+        return ["root: must be a mapping/object"], {}
 
     jobs = obj.get("jobs")
     if not isinstance(jobs, dict) or not jobs:
-        return ["Manifest must contain non-empty 'jobs' mapping"], {}
+        return ["jobs: must be a non-empty mapping"], {}
 
     normalized = {"jobs": {}}
 
     for name, conf in jobs.items():
+        job_path = f"jobs.{name}" if isinstance(name, str) else "jobs.<invalid-name>"
         if not isinstance(name, str) or not name.strip():
-            errors.append("Job name must be non-empty string")
+            _err(errors, "jobs", "job name must be non-empty string")
             continue
         if not isinstance(conf, dict):
-            errors.append(f"jobs.{name}: config must be mapping")
+            _err(errors, job_path, "config must be mapping")
             continue
 
-        unknown = set(conf.keys()) - REQUIRED_JOB_KEYS - OPTIONAL_JOB_KEYS
+        unknown = sorted(set(conf.keys()) - REQUIRED_JOB_KEYS - OPTIONAL_JOB_KEYS)
         if unknown:
-            errors.append(f"jobs.{name}: unknown keys {sorted(unknown)}")
+            _err(errors, job_path, f"unknown keys {unknown} (allowed: {sorted(REQUIRED_JOB_KEYS|OPTIONAL_JOB_KEYS)})")
 
-        missing = REQUIRED_JOB_KEYS - set(conf.keys())
+        missing = sorted(REQUIRED_JOB_KEYS - set(conf.keys()))
         if missing:
-            errors.append(f"jobs.{name}: missing required keys {sorted(missing)}")
+            _err(errors, job_path, f"missing required keys {missing}")
             continue
 
         cmd = conf.get("command")
         if not isinstance(cmd, str) or not cmd.strip():
-            errors.append(f"jobs.{name}.command must be non-empty string")
+            _err(errors, f"{job_path}.command", "must be non-empty string")
             continue
 
         timeout_sec = conf.get("timeout_sec", 21600)
@@ -52,11 +57,11 @@ def validate_manifest(obj: dict):
         env = conf.get("env", {})
 
         if not isinstance(timeout_sec, int) or timeout_sec <= 0:
-            errors.append(f"jobs.{name}.timeout_sec must be positive int")
+            _err(errors, f"{job_path}.timeout_sec", "must be positive int")
         if not isinstance(retries, int) or retries < 1:
-            errors.append(f"jobs.{name}.retries must be int >= 1")
+            _err(errors, f"{job_path}.retries", "must be int >= 1")
         if not isinstance(env, dict):
-            errors.append(f"jobs.{name}.env must be mapping")
+            _err(errors, f"{job_path}.env", "must be mapping")
 
         normalized["jobs"][name] = {
             "description": conf.get("description", ""),
@@ -88,7 +93,7 @@ def main():
 
     errs, norm = validate_manifest(obj)
     if errs:
-        print("INVALID")
+        print(f"INVALID ({len(errs)} error)")
         for e in errs:
             print(f"- {e}")
         sys.exit(1)
