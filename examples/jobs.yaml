@@ -36,3 +36,15 @@ chains:
     steps:
       - demo_checkpoint
       - demo_hello
+
+  demo_graph:
+    start: start
+    graph:
+      start:
+        job: demo_hello
+        on_success: mid
+        on_failure: end
+      mid:
+        job: demo_fail_once
+        on_success: end
+        on_failure: end
