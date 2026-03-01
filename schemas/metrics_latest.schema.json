@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/openclaw-worker-kit/metrics_latest.schema.json",
+  "title": "metrics_latest.json schema v1",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "host", "stats"],
+  "properties": {
+    "schema_version": {"type": "string", "const": "v1"},
+    "generated_at": {"type": "string"},
+    "host": {"type": "string"},
+    "stats": {
+      "type": "object",
+      "required": ["consecutive_failures"],
+      "properties": {
+        "consecutive_failures": {"type": "integer", "minimum": 0},
+        "last_health_status": {"type": ["string", "null"]},
+        "last_summary_status": {"type": ["string", "null"]}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

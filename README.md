@@ -112,3 +112,9 @@ Includes lightweight metrics exporter:
 - Local preflight: `./scripts/ci_preflight.sh`
 - Quality gate: `docs/QUALITY_GATE.md`
 - Workflow activation runbook: `docs/WORKFLOW_ACTIVATION.md`
+
+## Observability (v0.4.3)
+- `schemas/metrics_latest.schema.json`
+- `bin/ocw_status.sh`
+- `bin/ocw_trend.sh`
+- `docs/OBSERVABILITY.md`
