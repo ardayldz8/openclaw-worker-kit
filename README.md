@@ -107,3 +107,8 @@ Includes lightweight metrics exporter:
 - `Dockerfile`
 - `docker-compose.yml`
 - `docs/DOCKER.md`
+
+## CI/Quality (v0.4.2)
+- Local preflight: `./scripts/ci_preflight.sh`
+- Quality gate: `docs/QUALITY_GATE.md`
+- Workflow activation runbook: `docs/WORKFLOW_ACTIVATION.md`
