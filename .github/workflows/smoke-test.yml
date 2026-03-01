@@ -1,0 +1,23 @@
+name: smoke-test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  shellcheck-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - name: Shellcheck scripts
+        run: |
+          shellcheck bin/*.sh examples/*.sh || true
+      - name: Basic file presence
+        run: |
+          test -f systemd/ocw-job@.service
+          test -f systemd/ocw-health.service
+          test -f systemd/ocw-health.timer
+          test -f README.md
