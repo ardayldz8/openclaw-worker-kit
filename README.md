@@ -74,3 +74,9 @@ Enable with:
 ```bash
 export OCW_ALERT_ENABLED=1
 ```
+
+## Daily Summary
+The kit includes a daily summary script and timer:
+- `bin/daily_summary.sh`
+- `systemd/ocw-summary.service`
+- `systemd/ocw-summary.timer`

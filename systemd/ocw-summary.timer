@@ -1,0 +1,11 @@
+[Unit]
+Description=Run OpenClaw Worker Daily Summary (once per day)
+
+[Timer]
+OnCalendar=*-*-* 23:20:00
+Persistent=true
+RandomizedDelaySec=120
+Unit=ocw-summary.service
+
+[Install]
+WantedBy=timers.target

@@ -66,3 +66,14 @@ export OCW_ALERT_WEBHOOK_URL="https://example.com/hook"
 export OCW_ALERT_FAIL_THRESHOLD=3
 export OCW_ALERT_COOLDOWN_SEC=600
 ```
+
+## Daily Summary
+Run manually:
+```bash
+/opt/openclaw-worker/kit/bin/daily_summary.sh
+cat /opt/openclaw-worker/state/daily_summary_latest.json
+```
+
+Systemd units:
+- `ocw-summary.service`
+- `ocw-summary.timer` (daily)

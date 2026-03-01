@@ -1,0 +1,10 @@
+[Unit]
+Description=OpenClaw Worker Daily Summary
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=/opt/openclaw-worker/kit/bin/daily_summary.sh

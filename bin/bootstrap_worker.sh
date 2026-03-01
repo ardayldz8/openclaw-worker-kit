@@ -10,10 +10,13 @@ cp -r "$(cd "$(dirname "$0")/.." && pwd)"/* "${REPO_DIR}/"
 cp "${REPO_DIR}/systemd/ocw-job@.service" /etc/systemd/system/
 cp "${REPO_DIR}/systemd/ocw-health.service" /etc/systemd/system/
 cp "${REPO_DIR}/systemd/ocw-health.timer" /etc/systemd/system/
+cp "${REPO_DIR}/systemd/ocw-summary.service" /etc/systemd/system/
+cp "${REPO_DIR}/systemd/ocw-summary.timer" /etc/systemd/system/
 chmod +x "${REPO_DIR}/bin/"*.sh || true
 chmod +x "${REPO_DIR}/examples/"*.sh || true
 cp "${REPO_DIR}/examples/demo_hello.sh" "${ROOT_DIR}/jobs/demo_hello.sh"
 chmod +x "${ROOT_DIR}/jobs/demo_hello.sh"
 systemctl daemon-reload
 systemctl enable --now ocw-health.timer
+systemctl enable --now ocw-summary.timer
 echo "Done. Try: systemctl start ocw-job@demo_hello.service"
