@@ -88,3 +88,14 @@ cat /opt/openclaw-worker/state/metrics_latest.json
 Systemd:
 - `ocw-metrics.service`
 - `ocw-metrics.timer` (every 30 min)
+
+## jobs.yaml Manifest
+Validate manifest:
+```bash
+python3 /opt/openclaw-worker/kit/bin/manifest_validate.py --file /opt/openclaw-worker/kit/examples/jobs.yaml --json
+```
+
+Run a job by manifest:
+```bash
+/opt/openclaw-worker/kit/bin/manifest_run.sh /opt/openclaw-worker/kit/examples/jobs.yaml demo_hello
+```

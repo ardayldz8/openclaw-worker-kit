@@ -85,3 +85,7 @@ The kit includes a daily summary script and timer:
 Includes lightweight metrics exporter:
 - `bin/metrics_snapshot.sh`
 - `/opt/openclaw-worker/state/metrics_latest.json`
+
+## Manifest Support (v0.3.0)
+- Validate: `bin/manifest_validate.py --file examples/jobs.yaml --json`
+- Run job: `bin/manifest_run.sh examples/jobs.yaml demo_hello`

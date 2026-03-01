@@ -3,7 +3,7 @@ set -euo pipefail
 ROOT_DIR="/opt/openclaw-worker"
 REPO_DIR="${ROOT_DIR}/kit"
 apt-get update
-apt-get install -y rsync jq curl ca-certificates
+apt-get install -y rsync jq curl ca-certificates python3-yaml
 mkdir -p "${ROOT_DIR}/jobs" "${ROOT_DIR}/logs" "${ROOT_DIR}/state"
 mkdir -p "${REPO_DIR}"
 cp -r "$(cd "$(dirname "$0")/.." && pwd)"/* "${REPO_DIR}/"

@@ -1,0 +1,14 @@
+jobs:
+  demo_hello:
+    description: "Simple hello world job"
+    command: "echo hello-from-manifest && date -u"
+    timeout_sec: 60
+    retries: 1
+
+  demo_fail_once:
+    description: "Sample failing job for retry/alert demo"
+    command: "exit 1"
+    timeout_sec: 30
+    retries: 2
+    env:
+      OCW_ALERT_ENABLED: "0"
