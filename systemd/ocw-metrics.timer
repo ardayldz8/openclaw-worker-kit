@@ -1,0 +1,11 @@
+[Unit]
+Description=Run OpenClaw Worker Metrics Snapshot every 30 min
+
+[Timer]
+OnCalendar=*:0/30
+Persistent=true
+RandomizedDelaySec=45
+Unit=ocw-metrics.service
+
+[Install]
+WantedBy=timers.target

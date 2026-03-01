@@ -78,6 +78,7 @@ while true; do
       fi
       state_reset
     fi
+    [ -x "$(dirname "$0")/metrics_snapshot.sh" ] && "$(dirname "$0")/metrics_snapshot.sh" >/dev/null 2>&1 || true
     exit 0
   fi
 
@@ -107,6 +108,7 @@ while true; do
         echo "[retry] alert suppressed (fails=${new_fail}, threshold=${OCW_ALERT_FAIL_THRESHOLD}, cooldown=${OCW_ALERT_COOLDOWN_SEC}s)"
       fi
     fi
+    [ -x "$(dirname "$0")/metrics_snapshot.sh" ] && "$(dirname "$0")/metrics_snapshot.sh" >/dev/null 2>&1 || true
     exit 1
   fi
 

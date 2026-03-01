@@ -77,3 +77,14 @@ cat /opt/openclaw-worker/state/daily_summary_latest.json
 Systemd units:
 - `ocw-summary.service`
 - `ocw-summary.timer` (daily)
+
+## Metrics Snapshot
+Generate/update metrics JSON:
+```bash
+/opt/openclaw-worker/kit/bin/metrics_snapshot.sh
+cat /opt/openclaw-worker/state/metrics_latest.json
+```
+
+Systemd:
+- `ocw-metrics.service`
+- `ocw-metrics.timer` (every 30 min)

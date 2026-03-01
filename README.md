@@ -80,3 +80,8 @@ The kit includes a daily summary script and timer:
 - `bin/daily_summary.sh`
 - `systemd/ocw-summary.service`
 - `systemd/ocw-summary.timer`
+
+## Metrics Snapshot
+Includes lightweight metrics exporter:
+- `bin/metrics_snapshot.sh`
+- `/opt/openclaw-worker/state/metrics_latest.json`
